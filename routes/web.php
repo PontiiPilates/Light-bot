@@ -16,3 +16,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+/**
+ * Telegram-бот
+ */
+
+// вебхук
+Route::post('/tg/webhook', [App\Http\Controllers\Telegram\WebhookController::class, 'webhook']);
+// установка вебхука
+Route::get('/tg/set/webhook', [App\Http\Controllers\Telegram\WebhookController::class, 'set']);
+// удаление вебхука
+Route::get('/tg/delete/webhook', [App\Http\Controllers\Telegram\WebhookController::class, 'delete']);
+// информация о вебхуке
+Route::get('/tg/info/webhook', [App\Http\Controllers\Telegram\WebhookController::class, 'info']);

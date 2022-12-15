@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+use App\Services\TelegramService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // регистрация класса в качестве сервис-контейнера
+        $this->app->bind(TelegramService::class, function ($app) {
+            return new TelegramService();
+        });
     }
 
     /**
