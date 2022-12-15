@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/admin', 'Admin.Pages.home');
+
 /**
  * Telegram-бот
  */
