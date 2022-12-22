@@ -220,7 +220,8 @@ class WebhookController extends Controller
      */
     public function set()
     {
-        $http = $this->telegram_service->push_get('setWebhook', ['url' => 'https://where-go.ru/tg/webhook']);
+        // $http = $this->telegram_service->push_get('setWebhook', ['url' => 'https://where-go.ru/tg/webhook']);
+        $http = $this->telegram_service->push_get('setWebhook', ['url' => 'https://light-bot.ru/tg/webhook']);
         dd(json_decode($http));
     }
 
