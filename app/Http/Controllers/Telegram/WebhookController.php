@@ -75,143 +75,151 @@ class WebhookController extends Controller
 
         // пользователь отправил текст:
         if ($text == 'Старт' || $text == '/start') {
-            $this->telegram_service->send_message($chat_id, 'Отлично! Пользуйтесь кнопкой "Меню" для навигации.');
+            $this->telegram_service->send_message($chat_id, 'Добро пожаловать в мир Сквирел! Пользуйтесь кнопкой "Меню" для навигации.');
         }
 
         // пользователь отправил текст:
-        elseif ($text == 'Меню') {
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
-        }
+        // elseif ($text == 'Меню') {
+        // $buttons = $this->telegram_service->kit_buttons_menu();
+        // $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал кнопку:
-        elseif ($callback_data == '/timetable') {
+        // elseif ($callback_data == '/timetable') {
 
-            // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(1, '✅');
-            $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+        //     // интерактивность кнопки
+        //     $buttons = $this->telegram_service->kit_buttons_menu(1, '✅');
+        //     $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
-            // отправка view
-            $view = (string) view('Telegram.timetable');
-            $this->telegram_service->send_message($callback_chat_id, $view);
+        //     // отправка view
+        //     $view = (string) view('Telegram.timetable');
+        //     $this->telegram_service->send_message($callback_chat_id, $view);
 
-            // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
-        }
+        //     // отправка меню
+        //     $buttons = $this->telegram_service->kit_buttons_menu();
+        //     $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал пункт меню:
         elseif ($text == '/timetable') {
 
             // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(1, '✅');
-            $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+            // $buttons = $this->telegram_service->kit_buttons_menu(1, '✅');
+            // $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
             // отправка view
             $view = (string) view('Telegram.timetable');
             $this->telegram_service->send_message($chat_id, $view);
 
             // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+            // $buttons = $this->telegram_service->kit_buttons_menu();
+            // $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
         }
 
         // пользователь выбрал кнопку:
-        elseif ($callback_data == '/mk') {
+        // elseif ($callback_data == '/mk') {
 
-            // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(2, '✅');
-            $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+        //     // интерактивность кнопки
+        //     $buttons = $this->telegram_service->kit_buttons_menu(2, '✅');
+        //     $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
-            // отправка view
-            $view = (string) view('Telegram.mk');
-            $this->telegram_service->send_message($callback_chat_id, $view);
+        //     // отправка view
+        //     $view = (string) view('Telegram.mk');
+        //     $this->telegram_service->send_message($callback_chat_id, $view);
 
-            // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
-        }
+        //     // отправка меню
+        //     $buttons = $this->telegram_service->kit_buttons_menu();
+        //     $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал пункт меню:
-        elseif ($text == '/mk') {
+        // elseif ($text == '/mk') {
 
-            // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(2, '✅');
-            $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+        //     // интерактивность кнопки
+        //     $buttons = $this->telegram_service->kit_buttons_menu(2, '✅');
+        //     $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
-            // отправка view
-            $view = (string) view('Telegram.mk');
-            $this->telegram_service->send_message($chat_id, $view);
+        //     // отправка view
+        //     $view = (string) view('Telegram.mk');
+        //     $this->telegram_service->send_message($chat_id, $view);
 
-            // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
-        }
+        //     // отправка меню
+        //     $buttons = $this->telegram_service->kit_buttons_menu();
+        //     $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал кнопку:
-        elseif ($callback_data == '/promotions') {
+        // elseif ($callback_data == '/promotions') {
 
-            // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(3, '✅');
-            $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+        //     // интерактивность кнопки
+        //     $buttons = $this->telegram_service->kit_buttons_menu(3, '✅');
+        //     $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
-            // отправка view
-            $view = (string) view('Telegram.promotions');
-            $this->telegram_service->send_message($callback_chat_id, $view);
+        //     // отправка view
+        //     $view = (string) view('Telegram.promotions');
+        //     $this->telegram_service->send_message($callback_chat_id, $view);
 
-            // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
-        }
+        //     // отправка меню
+        //     $buttons = $this->telegram_service->kit_buttons_menu();
+        //     $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал пункт меню:
         elseif ($text == '/promotions') {
 
             // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(3, '✅');
-            $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+            // $buttons = $this->telegram_service->kit_buttons_menu(3, '✅');
+            // $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
             // отправка view
             $view = (string) view('Telegram.promotions');
             $this->telegram_service->send_message($chat_id, $view);
 
             // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+            // $buttons = $this->telegram_service->kit_buttons_menu();
+            // $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
         }
 
         // пользователь выбрал кнопку:
-        elseif ($callback_data == '/programs') {
+        // elseif ($callback_data == '/programs') {
 
-            // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(4, '✅');
-            $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+        //     // интерактивность кнопки
+        //     $buttons = $this->telegram_service->kit_buttons_menu(4, '✅');
+        //     $this->telegram_service->edit_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
-            // отправка view
-            $view = (string) view('Telegram.programs');
-            $this->telegram_service->send_message($callback_chat_id, $view);
+        //     // отправка view
+        //     $view = (string) view('Telegram.programs');
+        //     $this->telegram_service->send_message($callback_chat_id, $view);
 
-            // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
-        }
+        //     // отправка меню
+        //     $buttons = $this->telegram_service->kit_buttons_menu();
+        //     $this->telegram_service->send_message_with_buttons($callback_chat_id, 'Что Вас интересует?', $buttons);
+        // }
 
         // пользователь выбрал пункт меню:
         elseif ($text == '/programs') {
 
             // интерактивность кнопки
-            $buttons = $this->telegram_service->kit_buttons_menu(4, '✅');
-            $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
+            // $buttons = $this->telegram_service->kit_buttons_menu(4, '✅');
+            // $this->telegram_service->edit_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons, $callback_message_id);
 
             // отправка view
             $view = (string) view('Telegram.programs');
             $this->telegram_service->send_message($chat_id, $view);
 
             // отправка меню
-            $buttons = $this->telegram_service->kit_buttons_menu();
-            $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+            // $buttons = $this->telegram_service->kit_buttons_menu();
+            // $this->telegram_service->send_message_with_buttons($chat_id, 'Что Вас интересует?', $buttons);
+        } elseif ($text == '/events') {
+            // отправка view
+            $view = (string) view('Telegram.events');
+            $this->telegram_service->send_message($chat_id, $view);
+        } elseif ($text == '/about') {
+            // отправка view
+            $view = (string) view('Telegram.about');
+            $this->telegram_service->send_message($chat_id, $view);
         } else {
-            $this->telegram_service->send_message($chat_id, 'Пока что бот не знает таких команд, но мы его обязательно обучим');
+            $this->telegram_service->send_message($chat_id, 'Не знаю такой команды, но скоро меня обучат.');
         }
     }
 

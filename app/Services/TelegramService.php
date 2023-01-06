@@ -49,10 +49,10 @@ class TelegramService
      */
     public function push_get($method, $parameters = null)
     {
-        $api_token = config('telegram.devTestWgBot');
+        $api_token = config('telegram.SquirrelKidsBot');
         return Http::get("https://api.telegram.org/$api_token/$method", $parameters);
     }
-
+    
     /**
      * Конструктор POST-запроса
      * @param method string метод взаимодействия с api.telegram
@@ -61,7 +61,7 @@ class TelegramService
      */
     public function push_post($method, $parameters)
     {
-        $api_token = config('telegram.devTestWgBot');
+        $api_token = config('telegram.SquirrelKidsBot');
         return Http::post("https://api.telegram.org/$api_token/$method", $parameters);
     }
 
