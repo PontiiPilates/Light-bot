@@ -4,6 +4,12 @@
 
 @section('content')
 
+{{-- Message --}}
+@if(session()->has('message'))
+    <div class="alert alert-success" role="alert">{{ session()->get('message') }}</div>
+@endif
+{{-- End Message --}}
+
 <p><b>{{ $program->name }}</b></p>
 <p>{{ $program->description }}</p>
 
@@ -13,7 +19,7 @@
 
 <p><i>{{ $program->price }}</i></p>
 
-<a href="{{ route('admin.control.program', ['id' => $program->id]) }}" class="btn btn-dark">Редактировать</a>
+<a href="{{ route('admin.program.edit', ['id' => $program->id]) }}" class="btn btn-dark">Редактировать</a>
 
 
 @endsection

@@ -1,6 +1,10 @@
 @extends('admin.index')
 
+@if ( url()->current() == route('admin.program.create') )
 @section('title', 'Добавление программы')
+@else
+@section('title', 'Редактирование программы')
+@endif
 
 @section('content')
 
@@ -11,10 +15,10 @@
 {{-- End Message --}}
 
 {{-- Form --}}
-@if ( url()->current() == route('admin.add.program') )
-    <form class="row g-3" method="POST" action="{{ route('admin.create.program') }}">
+@if ( url()->current() == route('admin.program.create') )
+    <form class="row g-3" method="POST" action="{{ route('admin.program.create') }}">
 @else
-    <form class="row g-3" method="POST" action="{{ route('admin.edit.program', ['id' => $id]) }}">
+    <form class="row g-3" method="POST" action="{{ route('admin.program.edit', ['id' => $id]) }}">
 @endif
 
         @csrf
@@ -91,7 +95,7 @@
         {{-- Status --}}
         <div class="col-12">
             <div class="form-check">
-                @if ( url()->current() == route('admin.add.program') )
+                @if ( url()->current() == route('admin.program.create') )
                 <input class="form-check-input" type="checkbox" id="status" name="status" value="1" checked>
                 @else
                 <input class="form-check-input" type="checkbox" id="status" name="status" value="1" @if( $program->status == 1 ) checked @endif>
@@ -102,7 +106,7 @@
         {{-- End Status --}}
 
         <div class="col-12 mt-4">
-            @if ( url()->current() == route('admin.add.program') )
+            @if ( url()->current() == route('admin.program.create') )
                 <button type="submit" class="btn btn-dark">Сохранить</button>
             @else
                 <button type="submit" class="btn btn-dark">Сохранить</button>
@@ -114,7 +118,7 @@
     {{-- End Form --}}
 
     {{-- Modal --}}
-    @if ( url()->current() != route('admin.add.program') )
+    @if ( url()->current() != route('admin.program.create') )
     <div class="modal fade" id="shureModal" tabindex="-1" aria-labelledby="shureModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -125,7 +129,7 @@
                 <div class="modal-body">Вы удаляете программу. Продолжить?</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Закрыть</button>
-                    <form method="POST" action="{{ route('admin.delete.program', ['id' => $id]) }}">
+                    <form method="POST" action="{{ route('admin.program.destroy', ['id' => $id]) }}">
                         @csrf
                         <button type="submit" class="btn btn-dark">Да</button>
                     </form>

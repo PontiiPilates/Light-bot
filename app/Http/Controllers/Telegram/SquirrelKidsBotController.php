@@ -153,6 +153,6 @@ class SquirrelKidsBotController extends Controller
         ];
 
         // return view('Admin.Pages.info', ['data' => $data]);
-        return view('admin.pages.admin_home', ['data' => $data]);
+        return view('admin.pages.home', ['data' => $data]);
     }
 }

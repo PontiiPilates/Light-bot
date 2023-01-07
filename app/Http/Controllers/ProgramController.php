@@ -12,61 +12,66 @@ use Illuminate\Support\Facades\DB;
 class ProgramController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * Выводит список всех элементов.
+     * Вывод всех программ.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        // получение всех программ
         $programs = Program::all();
-
-        return view('admin.pages.list_programs', ['programs' => $programs]);
+        return view('admin.pages.programs_index', ['programs' => $programs]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     * Добавление программы + добавление расписания.
+     * Вывод формы для добавления расписания.
+     * Добавление расписания в базу данных.
      *
      * @return \Illuminate\Http\Response
      */
     public function create(Request $r)
     {
-        // добавление программы
-        $program = Program::create($r->all());
-
-        // если дата и время существуют
-        if ($r->day && $r->time) {
-
-            // сопоставления к дням для сортировки
-            $days = [
-                'Пн' => 1,
-                'Вт' => 2,
-                'Ср' => 3,
-                'Чт' => 4,
-                'Пт' => 5,
-                'Сб' => 6,
-                'Вс' => 7,
-            ];
-
-            foreach ($r->day as $k => $v) {
-
-                $day = $v;
-                $day_number = $days[$day];
-                $time = $r->time[$k];
-                $entity_id = $program->id;
-
-                // добавление расписания
-                $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
-            }
+        // если get, то вывод формы
+        if ($r->isMethod('GET')) {
+            return view('admin.pages.program_form');
         }
 
-        // сообщение о результате выполнения операции
-        $r->session()->flash('message', 'Программа успешно добавлена.');
+        // если post, то добавление в базу данных
+        if ($r->isMethod('POST')) {
 
-        // return redirect()->route('admin.add.program');
-        return redirect()->route('admin.list.programs');
+            // добавление программы
+            $program = Program::create($r->all());
+
+            // если если существует расписание, то добавление расписания
+            if ($r->day && $r->time) {
+
+                // сопоставления для возможности сортировки по дням
+                $days = [
+                    'Пн' => 1,
+                    'Вт' => 2,
+                    'Ср' => 3,
+                    'Чт' => 4,
+                    'Пт' => 5,
+                    'Сб' => 6,
+                    'Вс' => 7,
+                ];
+
+                foreach ($r->day as $k => $v) {
+
+                    $day = $v;
+                    $day_number = $days[$day];
+                    $time = $r->time[$k];
+                    $entity_id = $program->id;
+
+                    // добавление расписания
+                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
+                }
+            }
+
+            // сообщение о результате выполнения операции
+            $r->session()->flash('message', "Программа \"$program->name\" успешно добавлена.");
+
+            return redirect()->route('admin.programs.index');
+        }
     }
 
     /**
@@ -81,38 +86,43 @@ class ProgramController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Вывод программы.
+     * Вывод расписания.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id = 'unrequired')
     {
-        // получение программы
-        $program = Program::find($id);
-        // получение расписания
-        $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
 
-        // костыль для страницы просмотра предварительного результата
-        if (url()->current() == route('admin.look.program', ['id' => $id])) {
+        // если адрес просмотра программы
+        if (url()->current() == route('admin.program.show', ['id' => $id])) {
 
-            // вывод расписсания
-            $timetable = DB::table('programs')
-                ->where('programs.id', $id)
-                ->join('timetables', 'programs.id', 'timetables.entity_id')
-                ->select('timetables.day', 'timetables.time', 'programs.name', 'programs.description', 'programs.price')
+            // получение программы
+            $program = Program::find($id);
+
+            // получение расписания
+            $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
+
+            return view('admin.pages.program_show', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
+        }
+
+        // если адрес просмотра расписания
+        if (url()->current() == route('admin.timetable.show')) {
+
+            // получение расписания
+            $timetable = DB::table('timetables')
+                ->join('programs', 'timetables.entity_id', 'programs.id')
+                ->select('timetables.day', 'timetables.time', 'programs.name')
                 ->orderBy('day_number')
                 ->orderBy('time')
                 ->get();
 
-            return view('admin.looks.program', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
+            return view('admin.pages.timetable_show', ['timetable' => $timetable]);
         }
-        
-        return view('admin.pages.form_program', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
     }
 
     /**
-     * Show the form for editing the specified resource.
      * Редактирование программы.
      *
      * @param  int  $id
@@ -120,53 +130,67 @@ class ProgramController extends Controller
      */
     public function edit(Request $r, $id)
     {
-        // получение программы
-        $program = Program::find($id);
-        // обновление программы
-        $program->update($r->all());
 
-        // если статус "снят с публикации"
-        if (!$r->status) {
+        // если get, то вывод формы
+        if ($r->isMethod('GET')) {
+
+            // получение программы
+            $program = Program::find($id);
+
+            // получение расписания
+            $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
+
+            return view('admin.pages.program_form', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
+        }
+
+        // если post, то обновление программы в базе данных
+        if ($r->isMethod('POST')) {
+
+            // получение программы
+            $program = Program::find($id);
+
             // обновление программы
-            $program->update(['status' => 0]);
-        }
+            $program->update($r->all());
 
-        // очистка расписания для обновляемой программы, чтобы избежать дублей
-        $timetable = Timetable::where('entity_id', $id)->delete();
-
-        // если дата и время существуют
-        if ($r->day && $r->time) {
-
-            // сопоставления к дням для сортировки
-            $days = [
-                'Пн' => 1,
-                'Вт' => 2,
-                'Ср' => 3,
-                'Чт' => 4,
-                'Пт' => 5,
-                'Сб' => 6,
-                'Вс' => 7,
-            ];
-
-            foreach ($r->day as $k => $v) {
-
-                $day = $v;
-                $day_number = $days[$day];
-                $time = $r->time[$k];
-                $entity_id = $program->id;
-
-                // добавление расписания
-                $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
+            // дополнительное обновление при отсутствующем статусе
+            if (!$r->status) {
+                $program->update(['status' => 0]);
             }
+
+            // очистка расписания для обновляемой программы, чтобы избежать дублей
+            $timetable = Timetable::where('entity_id', $id)->delete();
+
+            // сопоставления для возможности сортировки по дням
+            if ($r->day && $r->time) {
+
+                // сопоставления для возможности сортировки по дням
+                $days = [
+                    'Пн' => 1,
+                    'Вт' => 2,
+                    'Ср' => 3,
+                    'Чт' => 4,
+                    'Пт' => 5,
+                    'Сб' => 6,
+                    'Вс' => 7,
+                ];
+
+                foreach ($r->day as $k => $v) {
+
+                    $day = $v;
+                    $day_number = $days[$day];
+                    $time = $r->time[$k];
+                    $entity_id = $program->id;
+
+                    // добавление расписания
+                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
+                }
+            }
+
+            // сообщение о результате выполнения операции
+            $r->session()->flash('message', 'Программа успешно обновлена.');
+
+            return redirect()->route('admin.program.show', ['id' => $program->id]);
         }
-
-        // получение созданного расписания
-        $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
-
-        // сообщение о результате выполнения операции
-        $r->session()->flash('message', 'Программа успешно обновлена.');
-
-        return redirect()->route('admin.control.program', ['id' => $id]);
     }
 
     /**
@@ -182,8 +206,8 @@ class ProgramController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * Удаление программы + расписания к ней.
+     * Удаление программы.
+     * Удаление расписания к программе.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -202,20 +226,6 @@ class ProgramController extends Controller
         // сообщение о результате выполнения операции
         $r->session()->flash('message', "Программа \"$program_name\" успешно удалена.");
 
-        return redirect()->route('admin.list.programs');
-    }
-
-    public function look()
-    {
-        // вывод расписсания
-        $timetable = DB::table('timetables')
-            // ->where('entity_id', $id)
-            ->join('programs', 'timetables.entity_id', 'programs.id')
-            ->select('timetables.day', 'timetables.time', 'programs.name')
-            ->orderBy('day_number')
-            ->orderBy('time')
-            ->get();
-
-        return view('admin.looks.timetable', ['timetable' => $timetable]);
+        return redirect()->route('admin.programs.index');
     }
 }
