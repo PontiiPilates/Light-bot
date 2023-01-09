@@ -26,8 +26,11 @@
     <div class="container">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('admin.home') }}">Главная</a></li>
-          <li class="nav-item"><a class="nav-link" aria-current="page" href="{{ route('admin.programs.index') }}">Программы и расписание</a></li>
+          <li class="nav-item"><a class="nav-link @if( url()->current() == route('admin.home') ) active @endif" aria-current="page" href="{{ route('admin.home') }}">Главная</a></li>
+          <li class="nav-item"><a class="nav-link @if( url()->current() == route('admin.programs.index') ) active @endif" aria-current="page" href="{{ route('admin.programs.index') }}">Программы и расписание</a></li>
+          <li class="nav-item"><a class="nav-link @if( url()->current() == route('admin.events.index') ) active @endif" aria-current="page" href="{{ route('admin.events.index') }}">Мероприятия и расписание</a></li>
+          <li class="nav-item"><a class="nav-link @if( url()->current() == route('admin.promotions.index') ) active @endif" aria-current="page" href="{{ route('admin.promotions.index') }}">Акции</a></li>
+          <li class="nav-item"><a class="nav-link @if( url()->current() == route('admin.about.index') ) active @endif" aria-current="page" href="{{ route('admin.about.index') }}">Адреса и контакты</a></li>
         </ul>
       </div>
     </div>

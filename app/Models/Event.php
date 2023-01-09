@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Program extends Model
+class Event extends Model
 {
     use HasFactory;
 
@@ -13,7 +13,6 @@ class Program extends Model
         'name',
         'description',
         'price',
-        'status',
-        'type',
+        'status'
     ];
 }

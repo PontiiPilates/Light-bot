@@ -20,6 +20,7 @@ class CreateTimetablesTable extends Migration
             $table->integer('day_number')->nullable();
             $table->date('date')->nullable();
             $table->time('time')->nullable();
+            $table->char('type')->nullable();
             $table->timestamps();
         });
     }

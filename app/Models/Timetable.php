@@ -15,5 +15,6 @@ class Timetable extends Model
         'day_number',
         'date',
         'time',
+        'type',
     ];
 }

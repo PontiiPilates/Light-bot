@@ -22,7 +22,7 @@
     {{-- Add program --}}
     <div class="card text-bg-light text-center interaction-shadow mb-4 col">
         <div class="card-body"><i class="bi bi-eye me-3"></i>Просмотр расписания</div>
-        <a href="{{ route('admin.timetable.show') }}" class="stretched-link"></a>
+        <a href="{{ route('admin.timetable.programs.show') }}" class="stretched-link"></a>
     </div>
     {{-- End Add program --}}
 

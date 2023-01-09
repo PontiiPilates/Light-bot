@@ -18,12 +18,14 @@ class ProgramController extends Controller
      */
     public function index()
     {
+        // получение всех программ
         $programs = Program::all();
+
         return view('admin.pages.programs_index', ['programs' => $programs]);
     }
 
     /**
-     * Вывод формы для добавления расписания.
+     * Вывод формы для добавления программы.
      * Добавление расписания в базу данных.
      *
      * @return \Illuminate\Http\Response
@@ -61,9 +63,10 @@ class ProgramController extends Controller
                     $day_number = $days[$day];
                     $time = $r->time[$k];
                     $entity_id = $program->id;
+                    $type = 'program';
 
                     // добавление расписания
-                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
+                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id, 'type' => $type]);
                 }
             }
 
@@ -102,23 +105,24 @@ class ProgramController extends Controller
             $program = Program::find($id);
 
             // получение расписания
-            $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
+            $timetable = Timetable::where('entity_id', $id)->where('type', 'program')->orderBy('day_number')->orderBy('time')->get();
 
             return view('admin.pages.program_show', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
         }
 
         // если адрес просмотра расписания
-        if (url()->current() == route('admin.timetable.show')) {
+        if (url()->current() == route('admin.timetable.programs.show')) {
 
             // получение расписания
             $timetable = DB::table('timetables')
                 ->join('programs', 'timetables.entity_id', 'programs.id')
+                ->where('type', 'program')
                 ->select('timetables.day', 'timetables.time', 'programs.name')
                 ->orderBy('day_number')
                 ->orderBy('time')
                 ->get();
 
-            return view('admin.pages.timetable_show', ['timetable' => $timetable]);
+            return view('admin.pages.programs_timetable', ['timetable' => $timetable]);
         }
     }
 
@@ -138,7 +142,7 @@ class ProgramController extends Controller
             $program = Program::find($id);
 
             // получение расписания
-            $timetable = Timetable::where('entity_id', $id)->orderBy('day_number')->orderBy('time')->get();
+            $timetable = Timetable::where('entity_id', $id)->where('type', 'program')->orderBy('day_number')->orderBy('time')->get();
 
             return view('admin.pages.program_form', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
         }
@@ -180,9 +184,10 @@ class ProgramController extends Controller
                     $day_number = $days[$day];
                     $time = $r->time[$k];
                     $entity_id = $program->id;
+                    $type = 'program';
 
                     // добавление расписания
-                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id]);
+                    $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id, 'type' => $type]);
                 }
             }
 
@@ -221,7 +226,7 @@ class ProgramController extends Controller
         // удаление программы
         $program->delete();
         // удаление расписания для программы
-        $timetable = Timetable::where('entity_id', $id)->delete();
+        $timetable = Timetable::where('entity_id', $id)->where('type', 'program')->delete();
 
         // сообщение о результате выполнения операции
         $r->session()->flash('message', "Программа \"$program_name\" успешно удалена.");

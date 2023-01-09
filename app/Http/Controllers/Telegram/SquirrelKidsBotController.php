@@ -132,9 +132,21 @@ class SquirrelKidsBotController extends Controller
 
     public function admin()
     {
+        // подсчёт пользователей, которые стартовали бот
         $people_started = IncomingMessage::select('from_id')->where('text', '/start')->groupBy('from_id')->get()->count();
 
+        // вывод текста от пользователей
         $messages = IncomingMessage::whereNotIn('text', ['/start', '/timetable', '/programs', '/events', '/promotions', '/about'])->get();
+
+        // активность пунктов меню
+        $activity = [
+            '/start' => IncomingMessage::where('text', ['/start'])->get()->count(),
+            '/timetable' => IncomingMessage::where('text', ['/timetable'])->get()->count(),
+            '/programs' => IncomingMessage::where('text', ['/programs'])->get()->count(),
+            '/events' => IncomingMessage::where('text', ['/events'])->get()->count(),
+            '/promotions' => IncomingMessage::where('text', ['/promotions'])->get()->count(),
+            '/about' => IncomingMessage::where('text', ['/about'])->get()->count(),
+        ];
 
         $text = [];
         foreach ($messages as $v) {
@@ -150,6 +162,7 @@ class SquirrelKidsBotController extends Controller
         $data = [
             'people_started' => $people_started,
             'messages' => $text,
+            'activity' => $activity,
         ];
 
         // return view('Admin.Pages.info', ['data' => $data]);

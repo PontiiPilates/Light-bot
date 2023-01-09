@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 /**
  * Telegram-бот.
@@ -69,4 +69,59 @@ Route::post('/admin/destroy/program/{id}', [ProgramController::class, 'destroy']
 // просмотр программы
 Route::get('/admin/show/program/{id}', [ProgramController::class, 'show'])->name('admin.program.show');
 // просмотр расписания
-Route::get('/admin/show/timetable', [ProgramController::class, 'show'])->name('admin.timetable.show');
+Route::get('/admin/show/timetable/programs', [ProgramController::class, 'show'])->name('admin.timetable.programs.show');
+
+/**
+ * Маршруты мероприятиями.
+ */
+
+use App\Http\Controllers\EventController;
+
+// список мероприятий
+Route::get('/admin/index/events', [EventController::class, 'index'])->name('admin.events.index');
+
+// добавление мероприятия
+Route::match(['get', 'post'], '/admin/create/event', [EventController::class, 'create'])->name('admin.event.create');
+// редактирование мероприятия
+Route::match(['get', 'post'], '/admin/edit/event/{id}', [EventController::class, 'edit'])->name('admin.event.edit');
+// удаление мероприятия
+Route::post('/admin/destroy/event/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
+
+// просмотр мероприятия
+Route::get('/admin/show/event/{id}', [EventController::class, 'show'])->name('admin.event.show');
+// просмотр расписания мероприятий
+Route::get('/admin/show/timetable/events', [EventController::class, 'show'])->name('admin.timetable.events.show');
+
+/**
+ * Маршруты акций.
+ */
+
+use App\Http\Controllers\PromotionController;
+
+// список акций
+Route::get('/admin/index/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
+
+// добавление акции
+Route::match(['get', 'post'], '/admin/create/promotion', [PromotionController::class, 'create'])->name('admin.promotion.create');
+// редактирование акции
+Route::match(['get', 'post'], '/admin/edit/promotion/{id}', [PromotionController::class, 'edit'])->name('admin.promotion.edit');
+// удаление акции
+Route::post('/admin/destroy/promotion/{id}', [PromotionController::class, 'destroy'])->name('admin.promotion.destroy');
+
+// просмотр акции
+Route::get('/admin/show/promotion/{id}', [PromotionController::class, 'show'])->name('admin.promotion.show');
+// просмотр акций
+Route::get('/admin/show/promotions', [PromotionController::class, 'show'])->name('admin.promotions.show');
+
+/**
+ * Маршруты о нас.
+ */
+
+use App\Http\Controllers\AboutController;
+
+// просмотр о нас
+Route::get('/admin/index/about', [AboutController::class, 'index'])->name('admin.about.index');
+// редактирование о нас
+Route::match(['get', 'post'], '/admin/edit/about', [AboutController::class, 'edit'])->name('admin.about.edit');
+
+// TODO: 1. Программы и мероприятия следует объединить в один модуль - entity || timetable

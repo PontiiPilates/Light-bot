@@ -1,6 +1,6 @@
 @extends('admin.index')
 
-@section('title', 'Расписание')
+@section('title', 'Расписание программ')
 
 @section('content')
 
