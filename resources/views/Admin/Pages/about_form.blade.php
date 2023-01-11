@@ -17,7 +17,7 @@
 
         {{-- Description --}}
         <div class="col-12">
-            <textarea class="form-control" id="description" placeholder="Описание программы" name="description">{{ $about->description ?? '' }}</textarea>
+            <textarea class="form-control" id="description" placeholder="Адреса и контакты" name="description">{{ $about->description ?? '' }}</textarea>
         </div>
         {{-- End Description --}}
 

@@ -8,6 +8,8 @@ use App\Models\Event;
 use App\Models\Timetable;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 
 class EventController extends Controller
 {
@@ -20,7 +22,7 @@ class EventController extends Controller
     public function index()
     {
         // получение всех мероприятий
-        $events = Event::all();
+        $events = Event::all()->sortBy('name');;
 
         return view('admin.pages.events_index', ['events' => $events]);
     }
@@ -59,6 +61,66 @@ class EventController extends Controller
                     $timetable = Timetable::create(['date' => $date, 'time' => $time, 'entity_id' => $entity_id, 'type' => $type]);
                 }
             }
+
+            //* Compiled.
+            $timetable = DB::table('timetables')
+                ->join('events', 'timetables.entity_id', 'events.id')
+                ->where('type', 'event')
+                ->where('timetables.date', '>=', date('Y-m-d'))
+                ->select('timetables.date', 'timetables.time', 'events.name')
+                ->orderBy('date')
+                ->orderBy('time')
+                ->get();
+
+
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = 'Пока мероприятий нет';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                $months = [
+                    '01' => 'января',
+                    '02' => 'февраля',
+                    '03' => 'марта',
+                    '04' => 'апреля',
+                    '05' => 'мая',
+                    '06' => 'июня',
+                    '07' => 'июля',
+                    '08' => 'августа',
+                    '09' => 'сентября',
+                    '10' => 'октября',
+                    '11' => 'ноября',
+                    '12' => 'декабря',
+                ];
+
+                $date = explode('-', $item->date);
+                $date = $date[2] . ' ' . $months[$date[1]];
+
+                // вывод даты при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $date\r\n";
+                }
+
+                // вывод даты при последующих итерациях
+                if ($i > 0) {
+                    if ($item->date != $timetable[$i - 1]->date) {
+                        $compilation_string .= "\r\n🗓 $date \r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+                $compilation_string .= "$time $item->name\r\n";
+
+                $i++;
+            }
+
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/event.php', $compilation_string);
+            //* End Compiled.
 
             // сообщение о результате выполнения операции
             $r->session()->flash('message', "Мероприятие \"$event->name\" успешно добавлено.");
@@ -103,16 +165,72 @@ class EventController extends Controller
         // если адрес просмотра расписания
         if (url()->current() == route('admin.timetable.events.show')) {
 
-            // получение расписания
+            //* Compiled.
+            // в скомпелированное расписание не должны попасть прошедшие мероприятия
             $timetable = DB::table('timetables')
                 ->join('events', 'timetables.entity_id', 'events.id')
                 ->where('type', 'event')
+                ->where('timetables.date', '>=', date('Y-m-d'))
                 ->select('timetables.date', 'timetables.time', 'events.name')
                 ->orderBy('date')
                 ->orderBy('time')
                 ->get();
 
-            return view('admin.pages.events_timetable', ['timetable' => $timetable]);
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = 'Пока мероприятий нет';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                $months = [
+                    '01' => 'января',
+                    '02' => 'февраля',
+                    '03' => 'марта',
+                    '04' => 'апреля',
+                    '05' => 'мая',
+                    '06' => 'июня',
+                    '07' => 'июля',
+                    '08' => 'августа',
+                    '09' => 'сентября',
+                    '10' => 'октября',
+                    '11' => 'ноября',
+                    '12' => 'декабря',
+                ];
+
+                $date = explode('-', $item->date);
+                $date = $date[2] . ' ' . $months[$date[1]];
+
+                // вывод даты при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $date\r\n";
+                }
+
+                // вывод даты при последующих итерациях
+                if ($i > 0) {
+                    if ($item->date != $timetable[$i - 1]->date) {
+                        $compilation_string .= "\r\n🗓 $date \r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+
+                if ($time) {
+                    $compilation_string .= "$time $item->name\r\n";
+                } else {
+                    $compilation_string .= "$item->name\r\n";
+                }
+
+                $i++;
+            }
+
+
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/event.php', $compilation_string);
+            //* End Compiled.
+
+            return view('admin.pages.events_timetable', ['compilation_string' => $compilation_string]);
         }
     }
 
@@ -170,6 +288,73 @@ class EventController extends Controller
                 }
             }
 
+            //* Compiled.
+            $timetable = DB::table('timetables')
+                ->join('events', 'timetables.entity_id', 'events.id')
+                ->where('type', 'event')
+                ->where('timetables.date', '>=', date('Y-m-d'))
+                ->select('timetables.date', 'timetables.time', 'events.name')
+                ->orderBy('date')
+                ->orderBy('time')
+                ->get();
+
+
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = 'Пока мероприятий нет';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                $months = [
+                    '01' => 'января',
+                    '02' => 'февраля',
+                    '03' => 'марта',
+                    '04' => 'апреля',
+                    '05' => 'мая',
+                    '06' => 'июня',
+                    '07' => 'июля',
+                    '08' => 'августа',
+                    '09' => 'сентября',
+                    '10' => 'октября',
+                    '11' => 'ноября',
+                    '12' => 'декабря',
+                ];
+
+                $date = explode('-', $item->date);
+                $date = $date[2] . ' ' . $months[$date[1]];
+
+                // вывод даты при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $date\r\n";
+                }
+
+                // вывод даты при последующих итерациях
+                if ($i > 0) {
+                    if ($item->date != $timetable[$i - 1]->date) {
+                        $compilation_string .= "\r\n🗓 $date \r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+
+                if ($time) {
+                    $compilation_string .= "$time $item->name\r\n";
+                } else {
+                    $compilation_string .= "$item->name\r\n";
+                }
+
+                $i++;
+            }
+
+
+
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/event.php', $compilation_string);
+            //* End Compiled.
+
             // сообщение о результате выполнения операции
             $r->session()->flash('message', 'Мероприятие успешно обновлено.');
 
@@ -206,6 +391,66 @@ class EventController extends Controller
         $event->delete();
         // удаление расписания для мероприятия
         $timetable = Timetable::where('entity_id', $id)->where('type', 'event')->delete();
+
+        //* Compiled.
+        $timetable = DB::table('timetables')
+        ->join('events', 'timetables.entity_id', 'events.id')
+        ->where('type', 'event')
+        ->where('timetables.date', '>=', date('Y-m-d'))
+        ->select('timetables.date', 'timetables.time', 'events.name')
+        ->orderBy('date')
+        ->orderBy('time')
+        ->get();
+
+
+
+    // компиляция строки для сообщения в телеграм
+    $compilation_string = 'Пока мероприятий нет';
+    $i = 0;
+
+    foreach ($timetable as $item) {
+
+        $months = [
+            '01' => 'января',
+            '02' => 'февраля',
+            '03' => 'марта',
+            '04' => 'апреля',
+            '05' => 'мая',
+            '06' => 'июня',
+            '07' => 'июля',
+            '08' => 'августа',
+            '09' => 'сентября',
+            '10' => 'октября',
+            '11' => 'ноября',
+            '12' => 'декабря',
+        ];
+
+        $date = explode('-', $item->date);
+        $date = $date[2] . ' ' . $months[$date[1]];
+
+        // вывод даты при первой итерации
+        if ($i == 0) {
+            $compilation_string = "🗓 $date\r\n";
+        }
+
+        // вывод даты при последующих итерациях
+        if ($i > 0) {
+            if ($item->date != $timetable[$i - 1]->date) {
+                $compilation_string .= "\r\n🗓 $date \r\n";
+            }
+        }
+
+        // вывод остального контента
+        $time = mb_strcut($item->time, 0, 5);
+        $compilation_string .= "$time $item->name\r\n";
+
+        $i++;
+    }
+
+
+    // компиляция файла с сообщением для телеграм
+    $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/event.php', $compilation_string);
+    //* End Compiled.
 
         // сообщение о результате выполнения операции
         $r->session()->flash('message', "Программа \"$event_name\" успешно удалена.");

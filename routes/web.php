@@ -48,7 +48,7 @@ Route::get('/tg/6bf533cfeff238e0d7d265a69a7018ad/info/webhook', [App\Http\Contro
  * Маршруты админки.
  */
 
-Route::get('/admin/home', [App\Http\Controllers\Telegram\SquirrelKidsBotController::class, 'admin'])->name('admin.home');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/home', [App\Http\Controllers\Telegram\SquirrelKidsBotController::class, 'admin'])->name('admin.home');
 
 /**
  * Маршруты управления программами.
@@ -57,19 +57,19 @@ Route::get('/admin/home', [App\Http\Controllers\Telegram\SquirrelKidsBotControll
 use App\Http\Controllers\ProgramController;
 
 // список программ
-Route::get('/admin/index/programs', [ProgramController::class, 'index'])->name('admin.programs.index');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/index/programs', [ProgramController::class, 'index'])->name('admin.programs.index');
 
 // добавление программы
-Route::match(['get', 'post'], '/admin/create/program', [ProgramController::class, 'create'])->name('admin.program.create');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/create/program', [ProgramController::class, 'create'])->name('admin.program.create');
 // редактирование программы
-Route::match(['get', 'post'], '/admin/edit/program/{id}', [ProgramController::class, 'edit'])->name('admin.program.edit');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/edit/program/{id}', [ProgramController::class, 'edit'])->name('admin.program.edit');
 // удаление программы
-Route::post('/admin/destroy/program/{id}', [ProgramController::class, 'destroy'])->name('admin.program.destroy');
+Route::post('/6bf533cfeff238e0d7d265a69a7018ad/admin/destroy/program/{id}', [ProgramController::class, 'destroy'])->name('admin.program.destroy');
 
 // просмотр программы
-Route::get('/admin/show/program/{id}', [ProgramController::class, 'show'])->name('admin.program.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/program/{id}', [ProgramController::class, 'show'])->name('admin.program.show');
 // просмотр расписания
-Route::get('/admin/show/timetable/programs', [ProgramController::class, 'show'])->name('admin.timetable.programs.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/timetable/programs', [ProgramController::class, 'show'])->name('admin.timetable.programs.show');
 
 /**
  * Маршруты мероприятиями.
@@ -78,19 +78,19 @@ Route::get('/admin/show/timetable/programs', [ProgramController::class, 'show'])
 use App\Http\Controllers\EventController;
 
 // список мероприятий
-Route::get('/admin/index/events', [EventController::class, 'index'])->name('admin.events.index');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/index/events', [EventController::class, 'index'])->name('admin.events.index');
 
 // добавление мероприятия
-Route::match(['get', 'post'], '/admin/create/event', [EventController::class, 'create'])->name('admin.event.create');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/create/event', [EventController::class, 'create'])->name('admin.event.create');
 // редактирование мероприятия
-Route::match(['get', 'post'], '/admin/edit/event/{id}', [EventController::class, 'edit'])->name('admin.event.edit');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/edit/event/{id}', [EventController::class, 'edit'])->name('admin.event.edit');
 // удаление мероприятия
-Route::post('/admin/destroy/event/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
+Route::post('/6bf533cfeff238e0d7d265a69a7018ad/admin/destroy/event/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
 
 // просмотр мероприятия
-Route::get('/admin/show/event/{id}', [EventController::class, 'show'])->name('admin.event.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/event/{id}', [EventController::class, 'show'])->name('admin.event.show');
 // просмотр расписания мероприятий
-Route::get('/admin/show/timetable/events', [EventController::class, 'show'])->name('admin.timetable.events.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/timetable/events', [EventController::class, 'show'])->name('admin.timetable.events.show');
 
 /**
  * Маршруты акций.
@@ -99,19 +99,19 @@ Route::get('/admin/show/timetable/events', [EventController::class, 'show'])->na
 use App\Http\Controllers\PromotionController;
 
 // список акций
-Route::get('/admin/index/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/index/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
 
 // добавление акции
-Route::match(['get', 'post'], '/admin/create/promotion', [PromotionController::class, 'create'])->name('admin.promotion.create');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/create/promotion', [PromotionController::class, 'create'])->name('admin.promotion.create');
 // редактирование акции
-Route::match(['get', 'post'], '/admin/edit/promotion/{id}', [PromotionController::class, 'edit'])->name('admin.promotion.edit');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/edit/promotion/{id}', [PromotionController::class, 'edit'])->name('admin.promotion.edit');
 // удаление акции
-Route::post('/admin/destroy/promotion/{id}', [PromotionController::class, 'destroy'])->name('admin.promotion.destroy');
+Route::post('/6bf533cfeff238e0d7d265a69a7018ad/admin/destroy/promotion/{id}', [PromotionController::class, 'destroy'])->name('admin.promotion.destroy');
 
 // просмотр акции
-Route::get('/admin/show/promotion/{id}', [PromotionController::class, 'show'])->name('admin.promotion.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/promotion/{id}', [PromotionController::class, 'show'])->name('admin.promotion.show');
 // просмотр акций
-Route::get('/admin/show/promotions', [PromotionController::class, 'show'])->name('admin.promotions.show');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/show/promotions', [PromotionController::class, 'show'])->name('admin.promotions.show');
 
 /**
  * Маршруты о нас.
@@ -120,8 +120,8 @@ Route::get('/admin/show/promotions', [PromotionController::class, 'show'])->name
 use App\Http\Controllers\AboutController;
 
 // просмотр о нас
-Route::get('/admin/index/about', [AboutController::class, 'index'])->name('admin.about.index');
+Route::get('/6bf533cfeff238e0d7d265a69a7018ad/admin/index/about', [AboutController::class, 'index'])->name('admin.about.index');
 // редактирование о нас
-Route::match(['get', 'post'], '/admin/edit/about', [AboutController::class, 'edit'])->name('admin.about.edit');
+Route::match(['get', 'post'], '/6bf533cfeff238e0d7d265a69a7018ad/admin/edit/about', [AboutController::class, 'edit'])->name('admin.about.edit');
 
 // TODO: 1. Программы и мероприятия следует объединить в один модуль - entity || timetable

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\About;
+use Illuminate\Support\Facades\Storage;
+
 
 class AboutController extends Controller
 {
@@ -19,6 +21,18 @@ class AboutController extends Controller
         // получение модели о нас
         $about = About::find(1);
         // dd($about);
+
+        //* Compiled.
+        // получение о нас
+        $about = About::find(1);
+        if($about) {
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = $about->description;
+            
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/about.php', $compilation_string);
+            //* End Compiled.
+        }
 
         return view('admin.pages.about_show', ['about' => $about]);
     }
@@ -68,18 +82,33 @@ class AboutController extends Controller
 
             // получение мероприятия
             $about = About::find(1);
-            
+
             return view('admin.pages.about_form', ['about' => $about]);
         }
-        
+
         // если post, то обновление о нас в базе данных
         if ($r->isMethod('POST')) {
 
             // получение о нас
             $about = About::find(1);
+            
+            if(!$about) {
+                $about = About::create($r->all());
+            }
 
             // обновление о нас
             $about->update($r->all());
+
+            //* Compiled.
+            // получение о нас
+            $about = About::find(1);
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = $about->description;
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/about.php', $compilation_string);
+            //* End Compiled.
 
             // сообщение о результате выполнения операции
             $r->session()->flash('message', 'Информация успешно обновлена.');

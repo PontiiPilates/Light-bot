@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
 use App\Models\Promotion;
 
 class PromotionController extends Controller
@@ -17,7 +18,7 @@ class PromotionController extends Controller
     public function index()
     {
         // получение всех акций
-        $promotions = Promotion::all();
+        $promotions = Promotion::all()->sortBy('name');
 
         return view('admin.pages.promotions_index', ['promotions' => $promotions]);
     }
@@ -41,6 +42,23 @@ class PromotionController extends Controller
 
             // добавление акции
             $promotion = Promotion::create($r->all());
+
+            //* Compiled.
+            // получение акций
+            $promotions = Promotion::where('status', 1)->get();
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+
+            foreach ($promotions as $item) {
+
+                $compilation_string .= "<b>$item->name</b>\r\n";
+                $compilation_string .= "$item->description\r\n\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/promotions.php', $compilation_string);
+            //* End Compiled.
 
             // сообщение о результате выполнения операции
             $r->session()->flash('message', "Акция \"$promotion->name\" успешно добавлена.");
@@ -80,10 +98,24 @@ class PromotionController extends Controller
         // если адрес просмотра акций
         if (url()->current() == route('admin.promotions.show')) {
 
+            //* Compiled.
             // получение акций
             $promotions = Promotion::where('status', 1)->get();
 
-            return view('admin.pages.promotions_show', ['promotions' => $promotions]);
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+
+            foreach ($promotions as $item) {
+
+                $compilation_string .= "<b>$item->name</b>\r\n";
+                $compilation_string .= "$item->description\r\n\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/promotions.php', $compilation_string);
+            //* End Compiled.
+
+            return view('admin.pages.promotions_show', ['compilation_string' => $compilation_string]);
         }
     }
 
@@ -117,6 +149,23 @@ class PromotionController extends Controller
             if (!$r->status) {
                 $promotion->update(['status' => 0]);
             }
+
+            //* Compiled.
+            // получение акций
+            $promotions = Promotion::where('status', 1)->get();
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+
+            foreach ($promotions as $item) {
+
+                $compilation_string .= "<b>$item->name</b>\r\n";
+                $compilation_string .= "$item->description\r\n\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/promotions.php', $compilation_string);
+            //* End Compiled.
 
             // сообщение о результате выполнения операции
             $r->session()->flash('message', 'Акция успешно обновлена.');

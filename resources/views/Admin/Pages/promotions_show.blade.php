@@ -4,11 +4,12 @@
 
 @section('content')
 
+<div class="border rounded p-3 ">
 {{-- Timetable --}}
-@foreach ($promotions as $item)
-    <p><b>{{ $item->name }}</b></p>
-    <p> {{ $item->description }}</p><br>
-@endforeach
+<pre>
+{!! $compilation_string !!}
+</pre>
 {{-- End Timetable --}}
+</div>
 
 @endsection

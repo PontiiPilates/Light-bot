@@ -4,27 +4,18 @@
 
 @section('content')
 
-{{-- Timetable --}}
-@foreach ($timetable as $item)
+<div class="row gap-3">
+    <div class="border rounded p-3 col">
+        {{-- Timetable --}}
+        <pre class="m-0">{!! $compilation_string !!}</pre>
+        {{-- End Timetable --}}
+    </div>
 
-    {{-- Если итерация первая --}}
-    @if ( $loop->first )
-        <p>🗓 {{ $item->day }}</p>
-    @endif
-
-    {{-- Если итерация вторая и больше --}}
-    @if ( $loop->index > 0 )
-
-        {{-- Если текущий день не равен предыдущему --}}
-        @if ( $item->day != $timetable[$loop->index-1]->day )
-            <p>🗓 {{ $item->day }}</p>
-        @endif
-
-    @endif
-
-    <p>{{ Str::limit($item->time, 5, false) }} {{ $item->name }}</p>
-
-@endforeach
-{{-- End Timetable --}}
+    <div class="border rounded p-3 col">
+        {{-- Timetable --}}
+        <pre class="m-0">{!! $compilation_programs !!}</pre>
+        {{-- End Timetable --}}
+    </div>
+</div>
 
 @endsection

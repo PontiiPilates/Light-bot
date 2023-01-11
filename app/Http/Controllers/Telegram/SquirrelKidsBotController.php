@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Storage;
+
+
 class SquirrelKidsBotController extends Controller
 {
     // сервис-контейнер
@@ -82,21 +85,26 @@ class SquirrelKidsBotController extends Controller
             $this->telegram_service->send_message($chat_id, 'Добро пожаловать в Сквирел-бот! Пользуйтесь кнопкой "Меню" для навигации.');
         } elseif ($text == '/timetable') {
             // пользователь выбрал пункт меню:
-            $view = (string) view('Telegram.timetable');
+            // $view = (string) view('Telegram.timetable');
+            $view = Storage::get('/telegram/messages/squirrel/timetable.php');
             $this->telegram_service->send_message($chat_id, $view);
         } elseif ($text == '/promotions') {
             // пользователь выбрал пункт меню:
-            $view = (string) view('Telegram.promotions');
+            // $view = (string) view('Telegram.promotions');
+            $view = Storage::get('/telegram/messages/squirrel/promotions.php');
             $this->telegram_service->send_message($chat_id, $view);
         } elseif ($text == '/programs') {
             // пользователь выбрал пункт меню:
-            $view = (string) view('Telegram.programs');
+            // $view = (string) view('Telegram.programs');
+            $view = Storage::get('/telegram/messages/squirrel/programs.php');
             $this->telegram_service->send_message($chat_id, $view);
         } elseif ($text == '/events') {
-            $view = (string) view('Telegram.events');
+            // $view = (string) view('Telegram.events');
+            $view = Storage::get('/telegram/messages/squirrel/event.php');
             $this->telegram_service->send_message($chat_id, $view);
         } elseif ($text == '/about') {
-            $view = (string) view('Telegram.about');
+            // $view = (string) view('Telegram.about');
+            $view = Storage::get('/telegram/messages/squirrel/about.php');
             $this->telegram_service->send_message($chat_id, $view);
         } else {
             $this->telegram_service->send_message($chat_id, 'Не знаю такой команды, но скоро меня обучат.');

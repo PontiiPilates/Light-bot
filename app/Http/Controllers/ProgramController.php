@@ -8,6 +8,8 @@ use App\Models\Program;
 use App\Models\Timetable;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProgramController extends Controller
 {
@@ -19,7 +21,7 @@ class ProgramController extends Controller
     public function index()
     {
         // получение всех программ
-        $programs = Program::all();
+        $programs = Program::all()->sortBy('name');
 
         return view('admin.pages.programs_index', ['programs' => $programs]);
     }
@@ -70,6 +72,57 @@ class ProgramController extends Controller
                 }
             }
 
+            //* Compiled.
+            $timetable = DB::table('timetables')
+                ->join('programs', 'timetables.entity_id', 'programs.id')
+                ->where('type', 'program')
+                ->select('timetables.day', 'timetables.time', 'programs.name')
+                ->orderBy('day_number')
+                ->orderBy('time')
+                ->get();
+
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                // вывод дня при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $item->day\r\n";
+                }
+
+                // вывод дня при последующей итерации
+                if ($i > 0) {
+                    if ($item->day != $timetable[$i - 1]->day) {
+                        $compilation_string .= "\r\n🗓 $item->day\r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+                $compilation_string .= "$time $item->name\r\n";
+
+                $i++;
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/timetable.php', $compilation_string);
+            //* End Compiled.
+
+            //* Program List Compiled.
+            $programs = Program::where('status', 1)->select('name')->orderBy('name')->get();
+
+            $compilation_programs = '';
+            foreach ($programs as $v) {
+                $compilation_programs .= "$v->name\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/programs.php', $compilation_programs);
+            //* End Program List Compiled.
+
             // сообщение о результате выполнения операции
             $r->session()->flash('message', "Программа \"$program->name\" успешно добавлена.");
 
@@ -95,7 +148,7 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id = 'unrequired')
+    public function show(Request $r, $id = 'unrequired')
     {
 
         // если адрес просмотра программы
@@ -113,6 +166,7 @@ class ProgramController extends Controller
         // если адрес просмотра расписания
         if (url()->current() == route('admin.timetable.programs.show')) {
 
+            //* Compiled.
             // получение расписания
             $timetable = DB::table('timetables')
                 ->join('programs', 'timetables.entity_id', 'programs.id')
@@ -122,7 +176,54 @@ class ProgramController extends Controller
                 ->orderBy('time')
                 ->get();
 
-            return view('admin.pages.programs_timetable', ['timetable' => $timetable]);
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                // вывод дня при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $item->day\r\n";
+                }
+
+                // вывод дня при последующей итерации
+                if ($i > 0) {
+                    if ($item->day != $timetable[$i - 1]->day) {
+                        $compilation_string .= "\r\n🗓 $item->day\r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+                if ($time) {
+                    $compilation_string .= "$time $item->name\r\n";
+                } else {
+                    $compilation_string .= "$item->name\r\n";
+                }
+
+                $i++;
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/timetable.php', $compilation_string);
+            //* End Compiled.
+
+
+            //* Program List Compiled.
+            $programs = Program::where('status', 1)->select('name')->orderBy('name')->get();
+
+            $compilation_programs = '';
+            foreach ($programs as $v) {
+                $compilation_programs .= "$v->name\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/programs.php', $compilation_programs);
+            //* End Program List Compiled.
+
+            return view('admin.pages.programs_timetable', ['compilation_string' => $compilation_string, 'compilation_programs' => $compilation_programs]);
         }
     }
 
@@ -190,6 +291,57 @@ class ProgramController extends Controller
                     $timetable = Timetable::create(['day' => $day, 'day_number' => $day_number, 'time' => $time, 'entity_id' => $entity_id, 'type' => $type]);
                 }
             }
+
+            //* Compiled.
+            $timetable = DB::table('timetables')
+                ->join('programs', 'timetables.entity_id', 'programs.id')
+                ->where('type', 'program')
+                ->select('timetables.day', 'timetables.time', 'programs.name')
+                ->orderBy('day_number')
+                ->orderBy('time')
+                ->get();
+
+
+            // компиляция строки для сообщения в телеграм
+            $compilation_string = '';
+            $i = 0;
+
+            foreach ($timetable as $item) {
+
+                // вывод дня при первой итерации
+                if ($i == 0) {
+                    $compilation_string = "🗓 $item->day\r\n";
+                }
+
+                // вывод дня при последующей итерации
+                if ($i > 0) {
+                    if ($item->day != $timetable[$i - 1]->day) {
+                        $compilation_string .= "\r\n🗓 $item->day\r\n";
+                    }
+                }
+
+                // вывод остального контента
+                $time = mb_strcut($item->time, 0, 5);
+                $compilation_string .= "$time $item->name\r\n";
+
+                $i++;
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/timetable.php', $compilation_string);
+            //* End Compiled.
+
+            //* Program List Compiled.
+            $programs = Program::where('status', 1)->select('name')->orderBy('name')->get();
+
+            $compilation_programs = '';
+            foreach ($programs as $v) {
+                $compilation_programs .= "$v->name\r\n";
+            }
+
+            // компиляция файла с сообщением для телеграм
+            $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/programs.php', $compilation_programs);
+            //* End Program List Compiled.
 
             // сообщение о результате выполнения операции
             $r->session()->flash('message', 'Программа успешно обновлена.');
